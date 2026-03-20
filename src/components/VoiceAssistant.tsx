@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Mic, MicOff, Volume2, X, Sparkles, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { openai, isAIEnabled } from "@/lib/openai";
+import { gemini, isAIEnabled } from "@/lib/gemini";
 import { toast } from "sonner";
 
 // Extend window for Speech Recognition
@@ -97,9 +97,9 @@ const VoiceAssistant = () => {
   };
 
   const processVoiceQuery = async (query: string) => {
-    if (!isAIEnabled || !openai) {
-      const fallback = lang === "en" 
-        ? "AI is currently offline. Please check your API key." 
+    if (!isAIEnabled || !gemini) {
+      const fallback = lang === "en"
+        ? "AI is currently offline. Please check your API key."
         : "AI वर्तमान में ऑफ़लाइन है। कृपया अपनी API कुंजी जांचें।";
       setResponse(fallback);
       speakText(fallback);
@@ -116,13 +116,8 @@ const VoiceAssistant = () => {
         Keep the response brief (max 2-3 sentences) so it sounds natural when spoken.
       `;
 
-      const aiResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 150,
-      });
-
-      const text = aiResponse.choices[0].message.content || "";
+      const aiResponse = await gemini.generateContent(prompt);
+      const text = aiResponse.response.text();
       setResponse(text);
       speakText(text);
     } catch (error) {
@@ -139,11 +134,10 @@ const VoiceAssistant = () => {
       {/* Floating Button */}
       <button
         onClick={toggleAssistant}
-        className={`fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 z-[100] shadow-2xl ${
-          isOpen 
-            ? "bg-destructive text-destructive-foreground rotate-90" 
+        className={`fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 z-[100] shadow-2xl ${isOpen
+            ? "bg-destructive text-destructive-foreground rotate-90"
             : "bg-primary text-primary-foreground hover:scale-110 neon-glow-green"
-        }`}
+          }`}
       >
         {isOpen ? <X className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
       </button>
@@ -181,7 +175,7 @@ const VoiceAssistant = () => {
                   {isProcessing ? t.processing : response || t.howCanIHelp}
                 </p>
                 {response && !isProcessing && (
-                  <button 
+                  <button
                     onClick={() => speakText(response)}
                     className="absolute -right-8 top-1/2 -translate-y-1/2 p-1.5 hover:text-primary transition-colors"
                   >
@@ -196,11 +190,10 @@ const VoiceAssistant = () => {
             <button
               onClick={isListening ? stopAssistant : startListening}
               disabled={isProcessing}
-              className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                isListening 
-                  ? "bg-neon-red shadow-[0_0_20px_rgba(255,50,50,0.4)] scale-110" 
+              className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${isListening
+                  ? "bg-neon-red shadow-[0_0_20px_rgba(255,50,50,0.4)] scale-110"
                   : "bg-primary/10 border-2 border-primary/30 text-primary hover:bg-primary/20"
-              }`}
+                }`}
             >
               {isListening ? (
                 <MicOff className="w-7 h-7 text-white" />

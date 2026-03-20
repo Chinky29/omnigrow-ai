@@ -1,6 +1,6 @@
 import { Wheat, Droplets, Layers, IndianRupee, Thermometer, Zap, Sparkles, AlertCircle } from "lucide-react";
 import { Language, translations } from "@/lib/translations";
-import { isAIEnabled } from "@/lib/openai";
+import { isAIEnabled } from "@/lib/gemini";
 
 interface FarmData {
   crop: string;
@@ -20,7 +20,7 @@ interface InputPanelProps {
 
 const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPanelProps) => {
   const t = translations[lang];
-  
+
   const crops = [
     { value: "Wheat", label: t.wheat },
     { value: "Rice", label: t.rice },
@@ -46,7 +46,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
     <div className="glass-card p-6 h-full flex flex-col gap-6 animate-slide-in-left relative overflow-hidden group">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
+
       {/* Tooltip for first-time users */}
       {!isSimulating && (
         <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30 animate-bounce shadow-lg backdrop-blur-md">
@@ -65,13 +65,12 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
             <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-widest mt-0.5 opacity-70">Simulation Parameters</p>
           </div>
         </div>
-        
+
         {/* AI Status Indicator */}
-        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-500 backdrop-blur-md ${
-          isAIEnabled 
-            ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_15px_rgba(var(--neon-green),0.1)]" 
+        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-500 backdrop-blur-md ${isAIEnabled
+            ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_15px_rgba(var(--neon-green),0.1)]"
             : "bg-muted/50 border-border text-muted-foreground opacity-60"
-        }`}>
+          }`}>
           {isAIEnabled ? (
             <>
               <Sparkles className="w-3 h-3 animate-pulse" />
@@ -195,11 +194,11 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
           </>
         )}
       </button>
-      
+
       {!isAIEnabled && (
         <p className="text-[10px] text-muted-foreground text-center mt-2 italic">
-          {lang === "en" 
-            ? "Note: Using local simulation engine. Add OpenAI API key to enable Advanced AI." 
+          {lang === "en"
+            ? "Note: Using local simulation engine. Add OpenAI API key to enable Advanced AI."
             : "नोट: स्थानीय सिमुलेशन इंजन का उपयोग कर रहे हैं। उन्नत AI सक्षम करने के लिए OpenAI API कुंजी जोड़ें।"}
         </p>
       )}
