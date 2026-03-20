@@ -32,7 +32,7 @@ const AnalysisChart = ({ factors, lang }: AnalysisChartProps) => {
           layout="vertical"
           margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border)/0.3)" horizontal={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} horizontal={false} />
           <XAxis 
             type="number" 
             hide 
@@ -49,7 +49,8 @@ const AnalysisChart = ({ factors, lang }: AnalysisChartProps) => {
                 x={x}
                 y={y}
                 dy={3}
-                fill="hsl(var(--muted-foreground))"
+                fill="currentColor"
+                opacity={0.6}
                 fontSize={9}
                 textAnchor="start"
                 className="font-medium uppercase tracking-tighter"

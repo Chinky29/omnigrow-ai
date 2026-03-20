@@ -50,7 +50,14 @@ export const translations = {
     analytics: "Analytics",
     reports: "Reports",
     weather: "Weather",
-    welcome: "Welcome"
+    welcome: "Welcome",
+    voiceAssistant: "KRISHIX Voice",
+    listening: "Listening...",
+    howCanIHelp: "How can I help you with your farm today?",
+    processing: "Processing...",
+    voiceError: "Sorry, I couldn't hear that. Could you repeat?",
+    voicePermission: "Please allow microphone access to use the voice assistant.",
+    voiceWelcome: "Hello! I am KRISHIX Voice Assistant. Ask me anything about your crops or farm."
   },
   hi: {
     appName: "कृषिक्ष एआई",
@@ -103,7 +110,14 @@ export const translations = {
     analytics: "विश्लेषण",
     reports: "रिपोर्ट",
     weather: "मौसम",
-    welcome: "स्वागत है"
+    welcome: "स्वागत है",
+    voiceAssistant: "कृषिक्ष वॉइस",
+    listening: "सुन रहा हूँ...",
+    howCanIHelp: "आज मैं आपके खेत के काम में आपकी क्या मदद कर सकता हूँ?",
+    processing: "प्रक्रिया जारी है...",
+    voiceError: "क्षमा करें, मैं सुन नहीं सका। क्या आप दोहरा सकते हैं?",
+    voicePermission: "वॉइस असिस्टेंट का उपयोग करने के लिए कृपया माइक्रोफ़ोन एक्सेस की अनुमति दें।",
+    voiceWelcome: "नमस्ते! मैं कृषिक्ष वॉइस असिस्टेंट हूँ। अपनी फसल या खेत के बारे में मुझसे कुछ भी पूछें।"
   }
 };
 

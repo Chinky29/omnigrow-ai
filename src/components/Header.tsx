@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Globe, Cpu } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
@@ -11,6 +12,7 @@ const Header = () => {
     { to: "/weather", label: t.weather },
     { to: "/analytics", label: t.analytics },
     { to: "/reports", label: t.reports },
+    { to: "/voice", label: t.voiceAssistant },
   ];
 
   return (
@@ -32,7 +34,8 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden lg:flex items-center gap-4 mr-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            <ThemeToggle />
+            <div className="hidden lg:flex items-center gap-4 mr-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
