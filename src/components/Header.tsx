@@ -1,11 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import { Globe, Cpu } from "lucide-react";
+import { Globe, Cpu, Bell } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ThemeToggle } from "./ThemeToggle";
+import { useState } from "react";
+import NotificationCenter from "./NotificationCenter";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const location = useLocation();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const { unreadCount } = useNotifications();
 
   const navLinks = [
     { to: "/", label: t.dashboard },
@@ -54,6 +59,26 @@ const Header = () => {
           </nav>
           
           <div className="flex items-center gap-3">
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={`p-2 rounded-xl border transition-all hover:scale-105 active:scale-95 ${
+                  showNotifications 
+                    ? "bg-primary/20 border-primary/40 text-primary shadow-[0_0_15px_rgba(var(--neon-green),0.2)]" 
+                    : "bg-white/5 border-white/10 text-muted-foreground hover:text-primary hover:border-primary/20"
+                }`}
+              >
+                <Bell className={`w-5 h-5 ${unreadCount > 0 ? "animate-pulse" : ""}`} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-[10px] font-black text-white rounded-full flex items-center justify-center border-2 border-background animate-bounce">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {showNotifications && (
+                <NotificationCenter onClose={() => setShowNotifications(false)} />
+              )}
+            </div>
             <ThemeToggle />
             <button
               onClick={() => setLang(lang === "en" ? "hi" : "en")}

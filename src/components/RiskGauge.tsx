@@ -1,68 +1,74 @@
-import { useEffect, useState } from "react";
+import React from "react";
 
 interface RiskGaugeProps {
-  value: number; // 0-100
-  label?: string;
+  value: number;
+  label: string;
 }
 
-const RiskGauge = ({ value, label = "Risk Level" }: RiskGaugeProps) => {
-  const [animatedValue, setAnimatedValue] = useState(0);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setAnimatedValue(value), 100);
-    return () => clearTimeout(timeout);
-  }, [value]);
-
-  const radius = 45;
+const RiskGauge = ({ value, label }: RiskGaugeProps) => {
+  const radius = 80;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (animatedValue / 100) * circumference;
+  const offset = circumference - (value / 100) * circumference;
 
   const getColor = (v: number) => {
-    if (v < 35) return { stroke: "hsl(var(--neon-green))", glow: "hsl(var(--neon-green) / 0.4)", label: "Low" };
-    if (v < 65) return { stroke: "hsl(var(--neon-yellow))", glow: "hsl(var(--neon-yellow) / 0.4)", label: "Medium" };
-    return { stroke: "hsl(var(--neon-red))", glow: "hsl(var(--neon-red) / 0.4)", label: "High" };
+    if (v < 30) return "text-primary";
+    if (v < 60) return "text-yellow-400";
+    return "text-destructive";
   };
 
-  const colorInfo = getColor(animatedValue);
+  const getGlowColor = (v: number) => {
+    if (v < 30) return "rgba(16, 185, 129, 0.4)";
+    if (v < 60) return "rgba(250, 204, 21, 0.4)";
+    return "rgba(239, 68, 68, 0.4)";
+  };
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="relative w-36 h-36">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+    <div className="flex flex-col items-center justify-center p-4 relative group">
+      <div className="relative w-48 h-48 flex items-center justify-center">
+        {/* Background Circle */}
+        <svg className="w-full h-full transform -rotate-90 drop-shadow-2xl">
           <circle
-            cx="50" cy="50" r={radius}
-            fill="none"
-            stroke="hsl(var(--muted))"
-            strokeWidth="8"
-            strokeLinecap="round"
+            cx="96"
+            cy="96"
+            r={radius}
+            stroke="currentColor"
+            strokeWidth="12"
+            fill="transparent"
+            className="text-white/5"
           />
+          {/* Progress Circle */}
           <circle
-            cx="50" cy="50" r={radius}
-            fill="none"
-            stroke={colorInfo.stroke}
-            strokeWidth="8"
-            strokeLinecap="round"
+            cx="96"
+            cy="96"
+            r={radius}
+            stroke="currentColor"
+            strokeWidth="12"
             strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            style={{
-              transition: "stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease",
-              filter: `drop-shadow(0 0 8px ${colorInfo.glow})`,
+            style={{ 
+              strokeDashoffset: offset,
+              filter: `drop-shadow(0 0 12px ${getGlowColor(value)})`
             }}
+            strokeLinecap="round"
+            fill="transparent"
+            className={`${getColor(value)} transition-all duration-1000 ease-out`}
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span
-            className="text-3xl font-bold font-mono transition-colors duration-400"
-            style={{ color: colorInfo.stroke }}
-          >
-            {Math.round(animatedValue)}%
+
+        {/* Center Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+          <span className={`text-5xl font-black tracking-tighter ${getColor(value)} transition-colors duration-500`}>
+            {value}%
           </span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wider mt-0.5">
-            {colorInfo.label}
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mt-1 opacity-60">
+            AI Risk Score
           </span>
         </div>
       </div>
-      <span className="text-sm text-muted-foreground font-medium">{label}</span>
+      
+      {/* Label under the gauge */}
+      <h3 className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-foreground/80">
+        {label}
+      </h3>
     </div>
   );
 };
