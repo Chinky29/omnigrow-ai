@@ -7,7 +7,7 @@ import WeatherBanner from "@/components/WeatherBanner";
 import WeatherForecast from "@/components/WeatherForecast";
 import RiskAnalysis from "@/components/RiskAnalysis";
 import GovernmentSchemes from "@/components/GovernmentSchemes";
-import { simulate } from "@/lib/simulation";
+import { simulate, simulateWithAI } from "@/lib/simulation";
 import { Globe, Cpu } from "lucide-react";
 import { Language, translations } from "@/lib/translations";
 
@@ -30,18 +30,25 @@ const Index = () => {
   // Live what-if updates after first simulation
   useEffect(() => {
     if (hasSimulated) {
+      // Use local simulation for instant updates
       setResult(simulate(farmData));
     }
   }, [farmData, hasSimulated]);
 
-  const handleSimulate = useCallback(() => {
+  const handleSimulate = useCallback(async () => {
     setIsSimulating(true);
-    setTimeout(() => {
-      setResult(simulate(farmData));
-      setIsSimulating(false);
+    try {
+      // Use AI for the main simulation button
+      const aiResult = await simulateWithAI(farmData, lang);
+      setResult(aiResult);
       setHasSimulated(true);
-    }, 1800);
-  }, [farmData]);
+    } catch (error) {
+      console.error("Simulation Error:", error);
+    } finally {
+      setIsSimulating(false);
+    }
+  }, [farmData, lang]);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">

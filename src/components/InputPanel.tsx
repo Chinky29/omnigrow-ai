@@ -1,5 +1,6 @@
-import { Wheat, Droplets, Layers, IndianRupee, Thermometer, Zap } from "lucide-react";
+import { Wheat, Droplets, Layers, IndianRupee, Thermometer, Zap, Sparkles, AlertCircle } from "lucide-react";
 import { Language, translations } from "@/lib/translations";
+import { isAIEnabled } from "@/lib/openai";
 
 interface FarmData {
   crop: string;
@@ -51,11 +52,32 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
         </div>
       )}
 
-      <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Wheat className="w-4 h-4 text-primary" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Wheat className="w-4 h-4 text-primary" />
+          </div>
+          <h2 className="text-base font-semibold text-foreground">{t.enterFarmData}</h2>
         </div>
-        <h2 className="text-base font-semibold text-foreground">{t.enterFarmData}</h2>
+        
+        {/* AI Status Indicator */}
+        <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all duration-500 ${
+          isAIEnabled 
+            ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_10px_rgba(var(--neon-green),0.1)]" 
+            : "bg-muted/50 border-border text-muted-foreground"
+        }`}>
+          {isAIEnabled ? (
+            <>
+              <Sparkles className="w-2.5 h-2.5" />
+              AI ON
+            </>
+          ) : (
+            <>
+              <AlertCircle className="w-2.5 h-2.5" />
+              AI OFF
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 flex-1">
@@ -153,11 +175,19 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
           </>
         ) : (
           <>
-            <Zap className="w-4 h-4" />
+            {isAIEnabled ? <Sparkles className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
             {t.simulateButton}
           </>
         )}
       </button>
+      
+      {!isAIEnabled && (
+        <p className="text-[10px] text-muted-foreground text-center mt-2 italic">
+          {lang === "en" 
+            ? "Note: Using local simulation engine. Add OpenAI API key to enable Advanced AI." 
+            : "नोट: स्थानीय सिमुलेशन इंजन का उपयोग कर रहे हैं। उन्नत AI सक्षम करने के लिए OpenAI API कुंजी जोड़ें।"}
+        </p>
+      )}
     </div>
   );
 };
