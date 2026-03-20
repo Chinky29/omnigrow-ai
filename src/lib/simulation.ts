@@ -128,6 +128,9 @@ export async function simulateWithAI(data: FarmData, lang: "en" | "hi"): Promise
       - actions: An array of 4 specific, actionable farming recommendations.
       - breakeven: A concise sentence explaining how to improve profitability.
       - risk: A number between 5 and 95 representing the calculated overall risk.
+      - factors: An array of 4 objects representing agricultural factors, each with:
+        - label: A short string (e.g., "Soil Nutrients", "Water Level") in ${lang === "hi" ? "Hindi" : "English"}
+        - impact: A number between -30 and 30 representing positive or negative impact on yield
       - cropComparison: An array of objects for Wheat, Rice, and Corn, each with:
         - name: string (exactly "Wheat", "Rice", or "Corn")
         - profit: number (estimated profit/loss in INR)
@@ -150,6 +153,7 @@ export async function simulateWithAI(data: FarmData, lang: "en" | "hi"): Promise
       actions: aiContent.actions || localResult.actions,
       breakeven: aiContent.breakeven || localResult.breakeven,
       risk: typeof aiContent.risk === 'number' ? aiContent.risk : localResult.risk,
+      factors: aiContent.factors || localResult.factors,
       cropComparison: aiContent.cropComparison || localResult.cropComparison,
     };
   } catch (error) {

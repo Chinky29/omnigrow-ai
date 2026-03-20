@@ -56,23 +56,23 @@ const WeatherForecast = ({ lang }: { lang: Language }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-4">
         {forecastData.map((day, idx) => (
           <div
             key={day.day}
-            className={`flex flex-col items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/50 hover:bg-muted/30 transition-all duration-300 group ${
+            className={`flex flex-col items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-muted/20 border border-border/50 hover:bg-muted/30 transition-all duration-300 group ${
               idx === 4 ? "col-span-2 sm:col-span-1" : ""
             }`}
           >
-            <span className="text-xs font-medium text-muted-foreground">{day.day}</span>
+            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase">{day.day}</span>
             <div className="transform group-hover:scale-110 transition-transform duration-300">
               <WeatherIcon condition={day.condition} />
             </div>
             <div className="flex flex-col items-center gap-1">
-              <span className="text-lg font-bold font-mono text-foreground">
+              <span className="text-base sm:text-lg font-bold font-mono text-foreground leading-none">
                 {day.temp}°C
               </span>
-              <div className="flex flex-col items-center gap-0.5 text-[10px] text-muted-foreground">
+              <div className="flex flex-col items-center gap-0.5 text-[9px] sm:text-[10px] text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Droplets className="w-2.5 h-2.5" />
                   {day.humidity}%

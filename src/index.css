@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @layer base {
   :root {
@@ -98,6 +98,28 @@
   }
   .neon-glow-red {
     box-shadow: 0 0 15px hsl(var(--neon-red) / 0.3), 0 0 40px hsl(var(--neon-red) / 0.1);
+  }
+
+  /* Custom Range Input Styling for better mobile touch targets */
+  input[type="range"] {
+    @apply h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-muted;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    @apply h-4 w-4 appearance-none rounded-full bg-primary border-2 border-background shadow-lg transition-transform active:scale-125;
+    margin-top: -0.45rem; /* Adjust based on track height */
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    @apply h-4 w-4 rounded-full bg-primary border-2 border-background shadow-lg transition-transform active:scale-125;
+  }
+
+  /* Secondary range color */
+  input[type="range"].accent-secondary::-webkit-slider-thumb {
+    @apply bg-secondary;
+  }
+  input[type="range"].accent-secondary::-moz-range-thumb {
+    @apply bg-secondary;
   }
 
   .neon-text-green {

@@ -82,14 +82,14 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
 
       <div className="flex flex-col gap-4 flex-1">
         {/* Crop */}
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-2">
+          <label className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
             <Wheat className="w-3 h-3" /> {t.crop}
           </label>
           <select
             value={data.crop}
             onChange={(e) => update("crop", e.target.value)}
-            className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+            className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2.5 sm:py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all appearance-none cursor-pointer"
           >
             {crops.map((c) => (
               <option key={c.value} value={c.value} className="bg-card">{c.label}</option>
@@ -98,31 +98,33 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
         </div>
 
         {/* Rainfall */}
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-3">
+          <label className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
             <Droplets className="w-3 h-3" /> {t.rainfall}
           </label>
-          <input
-            type="range" min={0} max={100} value={data.rainfall}
-            onChange={(e) => update("rainfall", +e.target.value)}
-            className="w-full accent-primary h-1.5 rounded-full appearance-none bg-muted cursor-pointer"
-          />
+          <div className="pt-2 pb-1">
+            <input
+              type="range" min={0} max={100} value={data.rainfall}
+              onChange={(e) => update("rainfall", +e.target.value)}
+              className="w-full accent-primary appearance-none cursor-pointer"
+            />
+          </div>
           <div className="flex justify-between text-[10px] text-muted-foreground">
             <span>{lang === "en" ? "Low" : "कम"}</span>
-            <span className="font-mono text-primary">{data.rainfall}%</span>
+            <span className="font-mono font-bold text-primary">{data.rainfall}%</span>
             <span>{lang === "en" ? "High" : "अधिक"}</span>
           </div>
         </div>
 
         {/* Soil Type */}
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-2">
+          <label className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
             <Layers className="w-3 h-3" /> {t.soilType}
           </label>
           <select
             value={data.soilType}
             onChange={(e) => update("soilType", e.target.value)}
-            className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+            className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2.5 sm:py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all appearance-none cursor-pointer"
           >
             {soilTypes.map((s) => (
               <option key={s.value} value={s.value} className="bg-card">{s.label}</option>
@@ -131,8 +133,8 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
         </div>
 
         {/* Investment */}
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-2">
+          <label className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
             <IndianRupee className="w-3 h-3" /> {t.investment}
           </label>
           <div className="relative">
@@ -140,24 +142,26 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
             <input
               type="number" value={data.investment}
               onChange={(e) => update("investment", +e.target.value)}
-              className="w-full bg-muted/50 border border-border rounded-lg pl-7 pr-3 py-2 text-sm text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+              className="w-full bg-muted/50 border border-border rounded-lg pl-8 pr-3 py-2.5 sm:py-2 text-sm text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
             />
           </div>
         </div>
 
         {/* Temperature */}
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-3">
+          <label className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
             <Thermometer className="w-3 h-3" /> {t.temperature}
           </label>
-          <input
-            type="range" min={10} max={50} value={data.temperature}
-            onChange={(e) => update("temperature", +e.target.value)}
-            className="w-full accent-secondary h-1.5 rounded-full appearance-none bg-muted cursor-pointer"
-          />
+          <div className="pt-2 pb-1">
+            <input
+              type="range" min={10} max={50} value={data.temperature}
+              onChange={(e) => update("temperature", +e.target.value)}
+              className="w-full accent-secondary appearance-none cursor-pointer"
+            />
+          </div>
           <div className="flex justify-between text-[10px] text-muted-foreground">
             <span>10°C</span>
-            <span className="font-mono text-secondary">{data.temperature}°C</span>
+            <span className="font-mono font-bold text-secondary">{data.temperature}°C</span>
             <span>50°C</span>
           </div>
         </div>
@@ -166,7 +170,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
       <button
         onClick={onSimulate}
         disabled={isSimulating}
-        className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--neon-green)/0.3)] active:scale-[0.97] disabled:opacity-60"
+        className="w-full py-3.5 sm:py-2.5 rounded-lg bg-primary text-primary-foreground font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--neon-green)/0.3)] active:scale-[0.97] disabled:opacity-60"
       >
         {isSimulating ? (
           <>

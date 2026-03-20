@@ -49,6 +49,7 @@ export const translations = {
     dashboard: "Dashboard",
     analytics: "Analytics",
     reports: "Reports",
+    weather: "Weather",
     welcome: "Welcome"
   },
   hi: {
@@ -101,6 +102,7 @@ export const translations = {
     dashboard: "डैशबोर्ड",
     analytics: "विश्लेषण",
     reports: "रिपोर्ट",
+    weather: "मौसम",
     welcome: "स्वागत है"
   }
 };
