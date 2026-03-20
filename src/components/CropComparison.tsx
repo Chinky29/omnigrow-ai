@@ -1,4 +1,5 @@
 import { Crown } from "lucide-react";
+import { Language, translations } from "@/lib/translations";
 
 interface CropData {
   name: string;
@@ -8,10 +9,17 @@ interface CropData {
 
 interface CropComparisonProps {
   crops: CropData[];
+  lang: Language;
 }
 
-const CropComparison = ({ crops }: CropComparisonProps) => {
+const CropComparison = ({ crops, lang }: CropComparisonProps) => {
+  const t = translations[lang];
   const best = crops.reduce((a, b) => (a.profit - a.risk > b.profit - b.risk ? a : b));
+
+  const getTranslatedCropName = (name: string) => {
+    const key = name.toLowerCase() as keyof typeof t;
+    return (t[key] as string) || name;
+  };
 
   const getRiskColor = (r: number) => {
     if (r < 35) return "text-neon-green";
@@ -22,7 +30,7 @@ const CropComparison = ({ crops }: CropComparisonProps) => {
   return (
     <div className="glass-card p-5">
       <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-        Multi-Crop Comparison
+        {t.comparisonTitle}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {crops.map((crop) => {
@@ -37,18 +45,20 @@ const CropComparison = ({ crops }: CropComparisonProps) => {
               }`}
             >
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-sm font-semibold text-foreground">{crop.name}</span>
+                <span className="text-sm font-semibold text-foreground">
+                  {getTranslatedCropName(crop.name)}
+                </span>
                 {isBest && <Crown className="w-3.5 h-3.5 text-neon-yellow" />}
               </div>
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Profit</span>
+                  <span className="text-muted-foreground">{t.profit}</span>
                   <span className={`font-mono font-medium ${crop.profit >= 0 ? "text-neon-green" : "text-neon-red"}`}>
                     ₹{crop.profit.toLocaleString("en-IN")}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Risk</span>
+                  <span className="text-muted-foreground">{t.risk}</span>
                   <span className={`font-mono font-medium ${getRiskColor(crop.risk)}`}>
                     {crop.risk}%
                   </span>
@@ -56,7 +66,7 @@ const CropComparison = ({ crops }: CropComparisonProps) => {
               </div>
               {isBest && (
                 <div className="mt-2 text-[10px] uppercase tracking-wider text-primary font-semibold">
-                  ★ Best Choice
+                  ★ {t.bestChoice}
                 </div>
               )}
             </div>

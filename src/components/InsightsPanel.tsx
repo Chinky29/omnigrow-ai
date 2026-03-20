@@ -1,4 +1,5 @@
 import { Brain, CheckCircle2, Lightbulb, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Language, translations } from "@/lib/translations";
 
 interface Factor {
   label: string;
@@ -9,9 +10,12 @@ interface InsightsPanelProps {
   factors: Factor[];
   actions: string[];
   breakeven: string;
+  lang: Language;
 }
 
-const InsightsPanel = ({ factors, actions, breakeven }: InsightsPanelProps) => {
+const InsightsPanel = ({ factors, actions, breakeven, lang }: InsightsPanelProps) => {
+  const t = translations[lang];
+
   const getImpactIcon = (impact: number) => {
     if (impact > 0) return <TrendingUp className="w-3 h-3 text-neon-green" />;
     if (impact < 0) return <TrendingDown className="w-3 h-3 text-neon-red" />;
@@ -32,7 +36,7 @@ const InsightsPanel = ({ factors, actions, breakeven }: InsightsPanelProps) => {
           <div className="w-6 h-6 rounded-md bg-neon-blue/10 flex items-center justify-center">
             <Brain className="w-3.5 h-3.5 text-neon-blue" />
           </div>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">AI Reasoning</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.insightsTitle}</h3>
         </div>
         <div className="space-y-2">
           {factors.map((f, i) => (
@@ -55,7 +59,7 @@ const InsightsPanel = ({ factors, actions, breakeven }: InsightsPanelProps) => {
           <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
             <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
           </div>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recommended Actions</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.actionsTitle}</h3>
         </div>
         <ul className="space-y-2">
           {actions.map((a, i) => (
@@ -73,7 +77,7 @@ const InsightsPanel = ({ factors, actions, breakeven }: InsightsPanelProps) => {
           <div className="w-6 h-6 rounded-md bg-neon-purple/10 flex items-center justify-center">
             <Lightbulb className="w-3.5 h-3.5 text-neon-purple" />
           </div>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Break-even Insight</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.breakevenTitle}</h3>
         </div>
         <p className="text-sm text-foreground/80 leading-relaxed">{breakeven}</p>
       </div>

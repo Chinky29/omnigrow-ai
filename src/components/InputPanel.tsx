@@ -1,4 +1,5 @@
 import { Wheat, Droplets, Layers, IndianRupee, Thermometer, Zap } from "lucide-react";
+import { Language, translations } from "@/lib/translations";
 
 interface FarmData {
   crop: string;
@@ -13,30 +14,55 @@ interface InputPanelProps {
   onChange: (data: FarmData) => void;
   onSimulate: () => void;
   isSimulating: boolean;
+  lang: Language;
 }
 
-const crops = ["Wheat", "Rice", "Corn", "Sugarcane", "Cotton", "Soybean"];
-const soilTypes = ["Alluvial", "Black Cotton", "Red Laterite", "Sandy Loam", "Clay"];
+const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPanelProps) => {
+  const t = translations[lang];
+  
+  const crops = [
+    { value: "Wheat", label: t.wheat },
+    { value: "Rice", label: t.rice },
+    { value: "Corn", label: t.corn },
+    { value: "Sugarcane", label: t.sugarcane },
+    { value: "Cotton", label: t.cotton },
+    { value: "Soybean", label: t.soybean },
+  ];
 
-const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProps) => {
+  const soilTypes = [
+    { value: "Alluvial", label: t.alluvial },
+    { value: "Black Cotton", label: t.blackCotton },
+    { value: "Red Laterite", label: t.redLaterite },
+    { value: "Sandy Loam", label: t.sandyLoam },
+    { value: "Clay", label: t.clay },
+  ];
+
   const update = (key: keyof FarmData, value: string | number) => {
     onChange({ ...data, [key]: value });
   };
 
   return (
-    <div className="glass-card p-5 h-full flex flex-col gap-5 animate-slide-in-left">
+    <div className="glass-card p-5 h-full flex flex-col gap-5 animate-slide-in-left relative overflow-hidden">
+      {/* Tooltip for first-time users */}
+      {!isSimulating && (
+        <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-primary/20 border border-primary/30 animate-bounce">
+          <Zap className="w-2.5 h-2.5 text-primary" />
+          <span className="text-[10px] font-bold text-primary uppercase">{t.startHere}</span>
+        </div>
+      )}
+
       <div className="flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
           <Wheat className="w-4 h-4 text-primary" />
         </div>
-        <h2 className="text-base font-semibold text-foreground">Enter Farm Data</h2>
+        <h2 className="text-base font-semibold text-foreground">{t.enterFarmData}</h2>
       </div>
 
       <div className="flex flex-col gap-4 flex-1">
         {/* Crop */}
         <div className="space-y-1.5">
           <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-            <Wheat className="w-3 h-3" /> Crop
+            <Wheat className="w-3 h-3" /> {t.crop}
           </label>
           <select
             value={data.crop}
@@ -44,7 +70,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
             className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
           >
             {crops.map((c) => (
-              <option key={c} value={c} className="bg-card">{c}</option>
+              <option key={c.value} value={c.value} className="bg-card">{c.label}</option>
             ))}
           </select>
         </div>
@@ -52,7 +78,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
         {/* Rainfall */}
         <div className="space-y-1.5">
           <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-            <Droplets className="w-3 h-3" /> Rainfall
+            <Droplets className="w-3 h-3" /> {t.rainfall}
           </label>
           <input
             type="range" min={0} max={100} value={data.rainfall}
@@ -60,16 +86,16 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
             className="w-full accent-primary h-1.5 rounded-full appearance-none bg-muted cursor-pointer"
           />
           <div className="flex justify-between text-[10px] text-muted-foreground">
-            <span>Low</span>
+            <span>{lang === "en" ? "Low" : "कम"}</span>
             <span className="font-mono text-primary">{data.rainfall}%</span>
-            <span>High</span>
+            <span>{lang === "en" ? "High" : "अधिक"}</span>
           </div>
         </div>
 
         {/* Soil Type */}
         <div className="space-y-1.5">
           <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-            <Layers className="w-3 h-3" /> Soil Type
+            <Layers className="w-3 h-3" /> {t.soilType}
           </label>
           <select
             value={data.soilType}
@@ -77,7 +103,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
             className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
           >
             {soilTypes.map((s) => (
-              <option key={s} value={s} className="bg-card">{s}</option>
+              <option key={s.value} value={s.value} className="bg-card">{s.label}</option>
             ))}
           </select>
         </div>
@@ -85,7 +111,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
         {/* Investment */}
         <div className="space-y-1.5">
           <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-            <IndianRupee className="w-3 h-3" /> Investment
+            <IndianRupee className="w-3 h-3" /> {t.investment}
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
@@ -100,7 +126,7 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
         {/* Temperature */}
         <div className="space-y-1.5">
           <label className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-            <Thermometer className="w-3 h-3" /> Temperature
+            <Thermometer className="w-3 h-3" /> {t.temperature}
           </label>
           <input
             type="range" min={10} max={50} value={data.temperature}
@@ -123,12 +149,12 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating }: InputPanelProp
         {isSimulating ? (
           <>
             <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-            AI Simulating…
+            {t.simulating}
           </>
         ) : (
           <>
             <Zap className="w-4 h-4" />
-            Simulate Future
+            {t.simulateButton}
           </>
         )}
       </button>

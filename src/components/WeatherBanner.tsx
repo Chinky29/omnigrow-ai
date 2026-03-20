@@ -1,10 +1,12 @@
 import { CloudRain, AlertTriangle, Sun } from "lucide-react";
+import { Language, translations } from "@/lib/translations";
 
 interface WeatherBannerProps {
   rainfall: number;
+  lang: Language;
 }
 
-const WeatherBanner = ({ rainfall }: WeatherBannerProps) => {
+const WeatherBanner = ({ rainfall, lang }: WeatherBannerProps) => {
   const isLow = rainfall < 30;
   const isHigh = rainfall > 75;
 
@@ -21,12 +23,20 @@ const WeatherBanner = ({ rainfall }: WeatherBannerProps) => {
       {isLow ? (
         <>
           <AlertTriangle className="w-4 h-4 shrink-0 animate-pulse-neon" />
-          <span>⚠️ Low rainfall expected — High risk of crop failure. Consider irrigation.</span>
+          <span>
+            {lang === "en" 
+              ? "⚠️ Low rainfall expected — High risk of crop failure. Consider irrigation." 
+              : "⚠️ कम बारिश की संभावना — फसल खराब होने का उच्च जोखिम। सिंचाई पर विचार करें।"}
+          </span>
         </>
       ) : (
         <>
           <CloudRain className="w-4 h-4 shrink-0" />
-          <span>🌧 Heavy rainfall expected — Risk of waterlogging. Ensure proper drainage.</span>
+          <span>
+            {lang === "en"
+              ? "🌧 Heavy rainfall expected — Risk of waterlogging. Ensure proper drainage."
+              : "🌧 भारी बारिश की संभावना — जलभराव का जोखिम। उचित जल निकासी सुनिश्चित करें।"}
+          </span>
         </>
       )}
     </div>
