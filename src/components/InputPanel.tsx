@@ -1,6 +1,6 @@
 import { Wheat, Droplets, Layers, IndianRupee, Thermometer, Zap, Sparkles, AlertCircle, CloudRain, Sun, Wallet } from "lucide-react";
 import { Language, translations } from "@/lib/translations";
-import { isAIEnabled } from "@/lib/openai";
+import { isAIEnabled } from "@/lib/gemini";
 
 interface FarmData {
   crop: string;
@@ -20,7 +20,7 @@ interface InputPanelProps {
 
 const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPanelProps) => {
   const t = translations[lang];
-  
+
   const crops = [
     { value: "Wheat", label: t.wheat },
     { value: "Rice", label: t.rice },

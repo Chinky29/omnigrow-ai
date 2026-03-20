@@ -1,4 +1,4 @@
-import { openai, isAIEnabled } from "./openai";
+import { gemini, isAIEnabled } from "./gemini.ts";
 
 export interface FarmData {
   crop: string;
@@ -98,67 +98,72 @@ export function simulate(data: FarmData): SimulationResult {
 
   return { risk, profit, outcome, factors, actions: actions.slice(0, 4), breakeven, cropComparison };
 }
-
 export async function simulateWithAI(data: FarmData, lang: "en" | "hi"): Promise<SimulationResult> {
   const localResult = simulate(data);
-  
-  if (!isAIEnabled || !openai) {
+
+  if (!isAIEnabled || !gemini) {
     return localResult;
   }
 
   try {
     const prompt = `
-      You are an expert Agricultural AI Advisor (KRISHIX AI).
-      Based on the following farm data and initial calculations, provide a detailed agricultural insight report.
-      
-      Farm Data:
-      - Crop: ${data.crop}
-      - Rainfall: ${data.rainfall}% (of optimal)
-      - Soil Type: ${data.soilType}
-      - Investment: ₹${data.investment.toLocaleString("en-IN")}
-      - Temperature: ${data.temperature}°C
-      
-      Initial Calculations:
-      - Risk Level: ${localResult.risk}%
-      - Expected Profit: ₹${localResult.profit.toLocaleString("en-IN")}
-      
-      Respond in ${lang === "hi" ? "Hindi" : "English"}.
-      Format your response as a JSON object with the following keys:
-      - outcome: A detailed paragraph about the future outcome and crop prospects.
-      - actions: An array of 4 specific, actionable farming recommendations.
-      - breakeven: A concise sentence explaining how to improve profitability.
-      - risk: A number between 5 and 95 representing the calculated overall risk.
-      - factors: An array of 4 objects representing agricultural factors, each with:
-        - label: A short string (e.g., "Soil Nutrients", "Water Level") in ${lang === "hi" ? "Hindi" : "English"}
-        - impact: A number between -30 and 30 representing positive or negative impact on yield
-      - cropComparison: An array of objects for Wheat, Rice, and Corn, each with:
-        - name: string (exactly "Wheat", "Rice", or "Corn")
-        - profit: number (estimated profit/loss in INR)
-        - risk: number (estimated risk 5-95)
-      
-      JSON output only.
+You are an expert Agricultural AI Advisor (KRISHIX AI).
+Based on the following farm data, provide a detailed agricultural insight report.
+
+Farm Data:
+- Crop: ${data.crop}
+- Rainfall: ${data.rainfall}% (of optimal)
+- Soil Type: ${data.soilType}
+- Investment: ₹${data.investment.toLocaleString("en-IN")}
+- Temperature: ${data.temperature}°C
+
+Initial Calculations:
+- Risk Level: ${localResult.risk}%
+- Expected Profit: ₹${localResult.profit.toLocaleString("en-IN")}
+
+Respond in ${lang === "hi" ? "Hindi" : "English"}.
+Return ONLY a valid JSON object with these exact keys:
+{
+  "risk": number between 5 and 95,
+  "outcome": "detailed paragraph about future outcome and crop prospects",
+  "actions": ["action1", "action2", "action3", "action4"],
+  "breakeven": "concise sentence about profitability",
+  "factors": [
+    { "label": "short label", "impact": number between -30 and 30 },
+    { "label": "short label", "impact": number },
+    { "label": "short label", "impact": number },
+    { "label": "short label", "impact": number }
+  ],
+  "cropComparison": [
+    { "name": "Wheat", "profit": number, "risk": number },
+    { "name": "Rice", "profit": number, "risk": number },
+    { "name": "Corn", "profit": number, "risk": number }
+  ]
+}
+Return ONLY the JSON. No explanation, no markdown, no backticks.
     `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo-0125",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-    });
+    const response = await gemini.generateContent(prompt);
+    const text = response.response.text();
 
-    const aiContent = JSON.parse(response.choices[0].message.content || "{}");
-    
+    // Strip any accidental markdown backticks
+    const clean = text.replace(/```json|```/g, "").trim();
+    const aiContent = JSON.parse(clean);
+
     return {
       ...localResult,
+      risk: typeof aiContent.risk === "number" ? aiContent.risk : localResult.risk,
       outcome: aiContent.outcome || localResult.outcome,
       actions: aiContent.actions || localResult.actions,
       breakeven: aiContent.breakeven || localResult.breakeven,
-      risk: typeof aiContent.risk === 'number' ? aiContent.risk : localResult.risk,
       factors: aiContent.factors || localResult.factors,
       cropComparison: aiContent.cropComparison || localResult.cropComparison,
     };
   } catch (error) {
-    console.error("OpenAI Error:", error);
-    return localResult;
+    console.error("Gemini Error:", error);
+    return localResult; // graceful fallback to local simulation
   }
 }
+
+
 

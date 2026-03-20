@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Mic, MicOff, Volume2, Sparkles, Loader2, MessageSquare, Bot } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { openai, isAIEnabled } from "@/lib/openai";
+import { gemini, isAIEnabled } from "@/lib/gemini";
 import { toast } from "sonner";
 
 const VoiceAssistantPage = () => {
@@ -76,9 +76,9 @@ const VoiceAssistantPage = () => {
   };
 
   const processVoiceQuery = async (query: string) => {
-    if (!isAIEnabled || !openai) {
-      const fallback = lang === "en" 
-        ? "AI is currently offline. Please check your API key." 
+    if (!isAIEnabled || !gemini) {
+      const fallback = lang === "en"
+        ? "AI is currently offline. Please check your API key."
         : "AI वर्तमान में ऑफ़लाइन है। कृपया अपनी API कुंजी जांचें।";
       setResponse(fallback);
       speakText(fallback);
@@ -95,13 +95,8 @@ const VoiceAssistantPage = () => {
         Keep the response brief (max 3-4 sentences) so it sounds natural when spoken.
       `;
 
-      const aiResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 250,
-      });
-
-      const text = aiResponse.choices[0].message.content || "";
+      const aiResponse = await gemini.generateContent(prompt);
+      const text = aiResponse.response.text();
       setResponse(text);
       speakText(text);
     } catch (error) {
@@ -143,7 +138,7 @@ const VoiceAssistantPage = () => {
           {/* Interaction Area */}
           <div className="glass-card p-8 sm:p-12 flex flex-col items-center justify-center gap-10 min-h-[450px] relative overflow-hidden shadow-2xl border-white/10 group">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none group-hover:opacity-100 transition-opacity duration-1000" />
-            
+
             {/* Listening/Processing Status */}
             <div className="flex flex-col items-center gap-6 z-10">
               <div className="relative">
@@ -153,11 +148,10 @@ const VoiceAssistantPage = () => {
                 <button
                   onClick={isListening ? stopAssistant : startListening}
                   disabled={isProcessing}
-                  className={`w-28 h-28 sm:w-36 sm:h-36 rounded-full flex items-center justify-center transition-all duration-500 relative z-10 ${
-                    isListening 
-                      ? "bg-neon-red shadow-[0_0_50px_rgba(255,50,50,0.5)] scale-110" 
+                  className={`w-28 h-28 sm:w-36 sm:h-36 rounded-full flex items-center justify-center transition-all duration-500 relative z-10 ${isListening
+                      ? "bg-neon-red shadow-[0_0_50px_rgba(255,50,50,0.5)] scale-110"
                       : "bg-primary/10 border-4 border-primary/20 text-primary hover:bg-primary/20 hover:scale-105 active:scale-95 shadow-xl"
-                  }`}
+                    }`}
                 >
                   {isListening ? (
                     <MicOff className="w-12 h-12 sm:w-16 sm:h-16 text-white animate-pulse" />
@@ -205,7 +199,7 @@ const VoiceAssistantPage = () => {
                           <p className="text-sm sm:text-lg leading-relaxed text-foreground font-medium">
                             {response}
                           </p>
-                          <button 
+                          <button
                             onClick={() => speakText(response)}
                             className="mt-5 flex items-center gap-2 text-[10px] font-black text-primary hover:text-white hover:bg-primary transition-all uppercase tracking-[0.2em] border border-primary/30 rounded-xl px-4 py-2 bg-primary/5 shadow-sm"
                           >
