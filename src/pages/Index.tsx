@@ -48,28 +48,37 @@ const Index = () => {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-10 space-y-6">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+      {/* Background Orbs */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px] animate-pulse-slow" />
+      </div>
+
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-20 sm:pt-24 pb-12 space-y-8 relative z-10">
         {/* Welcome Section */}
         {!hasSimulated && (
-          <div className="glass-card p-5 sm:p-10 text-center space-y-4 animate-slide-up bg-gradient-to-b from-primary/10 to-transparent border-primary/20">
-            <h2 className="text-xl sm:text-4xl font-black tracking-tighter text-foreground">
-              {t.welcome} <span className="text-primary">{t.appName}</span>
-            </h2>
-            <p className="text-xs sm:text-base text-muted-foreground max-w-2xl mx-auto text-balance">
-              {t.welcomeDesc}
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2">
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-muted/50 border border-border text-[8px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary animate-pulse" />
+          <div className="glass-card p-6 sm:p-12 text-center space-y-6 animate-slide-up bg-gradient-to-br from-primary/10 via-background/50 to-secondary/10 border-white/10 shadow-2xl">
+            <div className="space-y-2">
+              <h2 className="text-2xl sm:text-5xl font-black tracking-tight text-foreground leading-tight">
+                {t.welcome} <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">{t.appName}</span>
+              </h2>
+              <p className="text-sm sm:text-lg text-muted-foreground max-w-3xl mx-auto text-balance font-medium opacity-90">
+                {t.welcomeDesc}
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-foreground/80 uppercase tracking-widest backdrop-blur-md shadow-sm hover:bg-white/10 transition-colors">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_hsl(var(--primary))]" />
                 {t.realTimeData}
               </div>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-muted/50 border border-border text-[8px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-secondary animate-pulse" />
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-foreground/80 uppercase tracking-widest backdrop-blur-md shadow-sm hover:bg-white/10 transition-colors">
+                <div className="w-2 h-2 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_hsl(var(--secondary))]" />
                 {t.riskAssessment}
               </div>
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-muted/50 border border-border text-[8px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent animate-pulse" />
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-foreground/80 uppercase tracking-widest backdrop-blur-md shadow-sm hover:bg-white/10 transition-colors">
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_hsl(var(--accent))]" />
                 {t.marketInsights}
               </div>
             </div>

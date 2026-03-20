@@ -43,58 +43,69 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
   };
 
   return (
-    <div className="glass-card p-5 h-full flex flex-col gap-5 animate-slide-in-left relative overflow-hidden">
+    <div className="glass-card p-6 h-full flex flex-col gap-6 animate-slide-in-left relative overflow-hidden group">
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
       {/* Tooltip for first-time users */}
       {!isSimulating && (
-        <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-primary/20 border border-primary/30 animate-bounce">
-          <Zap className="w-2.5 h-2.5 text-primary" />
-          <span className="text-[10px] font-bold text-primary uppercase">{t.startHere}</span>
+        <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30 animate-bounce shadow-lg backdrop-blur-md">
+          <Zap className="w-3 h-3 text-primary fill-primary" />
+          <span className="text-[10px] font-black text-primary uppercase tracking-widest">{t.startHere}</span>
         </div>
       )}
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Wheat className="w-4 h-4 text-primary" />
+      <div className="flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
+            <Wheat className="w-5 h-5 text-primary" />
           </div>
-          <h2 className="text-base font-semibold text-foreground">{t.enterFarmData}</h2>
+          <div>
+            <h2 className="text-sm font-black text-foreground uppercase tracking-wider">{t.enterFarmData}</h2>
+            <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-widest mt-0.5 opacity-70">Simulation Parameters</p>
+          </div>
         </div>
         
         {/* AI Status Indicator */}
-        <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all duration-500 ${
+        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-500 backdrop-blur-md ${
           isAIEnabled 
-            ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_10px_rgba(var(--neon-green),0.1)]" 
-            : "bg-muted/50 border-border text-muted-foreground"
+            ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_15px_rgba(var(--neon-green),0.1)]" 
+            : "bg-muted/50 border-border text-muted-foreground opacity-60"
         }`}>
           {isAIEnabled ? (
             <>
-              <Sparkles className="w-2.5 h-2.5" />
-              AI ON
+              <Sparkles className="w-3 h-3 animate-pulse" />
+              AI ACTIVE
             </>
           ) : (
             <>
-              <AlertCircle className="w-2.5 h-2.5" />
-              AI OFF
+              <AlertCircle className="w-3 h-3" />
+              OFFLINE
             </>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 flex-1">
+      <div className="flex flex-col gap-5 flex-1 relative z-10">
         {/* Crop */}
-        <div className="space-y-2">
-          <label className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-            <Wheat className="w-3 h-3" /> {t.crop}
+        <div className="space-y-2.5">
+          <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2 opacity-80">
+            <Wheat className="w-3.5 h-3.5 text-primary" /> {t.crop}
           </label>
-          <select
-            value={data.crop}
-            onChange={(e) => update("crop", e.target.value)}
-            className="w-full bg-muted/50 border border-border rounded-lg px-3 py-2.5 sm:py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all appearance-none cursor-pointer"
-          >
-            {crops.map((c) => (
-              <option key={c.value} value={c.value} className="bg-card">{c.label}</option>
-            ))}
-          </select>
+          <div className="relative group/select">
+            <select
+              value={data.crop}
+              onChange={(e) => update("crop", e.target.value)}
+              className="w-full bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all appearance-none cursor-pointer hover:bg-white/10 dark:hover:bg-black/40 font-medium"
+            >
+              {crops.map((c) => (
+                <option key={c.value} value={c.value} className="bg-background text-foreground py-2">{c.label}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground group-hover/select:text-primary transition-colors">
+              <Layers className="w-4 h-4" />
+            </div>
+          </div>
         </div>
 
         {/* Rainfall */}
@@ -170,16 +181,16 @@ const InputPanel = ({ data, onChange, onSimulate, isSimulating, lang }: InputPan
       <button
         onClick={onSimulate}
         disabled={isSimulating}
-        className="w-full py-3.5 sm:py-2.5 rounded-lg bg-primary text-primary-foreground font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--neon-green)/0.3)] active:scale-[0.97] disabled:opacity-60"
+        className="btn-primary w-full py-4 text-sm uppercase tracking-[0.2em] group/btn flex items-center justify-center gap-3"
       >
         {isSimulating ? (
           <>
-            <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            <Zap className="w-4 h-4 animate-spin text-white" />
             {t.simulating}
           </>
         ) : (
           <>
-            {isAIEnabled ? <Sparkles className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+            <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform text-white fill-white/20" />
             {t.simulateButton}
           </>
         )}
