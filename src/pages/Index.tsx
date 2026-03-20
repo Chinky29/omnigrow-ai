@@ -85,20 +85,10 @@ const Index = () => {
           </div>
         )}
 
-        {/* Weather Banner */}
-        <div className="px-1 sm:px-0">
-          <WeatherBanner rainfall={farmData.rainfall} lang={lang} />
-        </div>
-
-        {/* Risk Analysis (Previously with Weather Forecast) */}
-        <div className="grid grid-cols-1 gap-6">
-          <RiskAnalysis risk={result.risk} lang={lang} />
-        </div>
-
-        {/* Main 3-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Panel */}
-          <div className="lg:col-span-3 lg:sticky lg:top-24 h-fit">
+        {/* Main Simulator Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Panel: Input & Simulation */}
+          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
             <InputPanel
               data={farmData}
               onChange={setFarmData}
@@ -106,10 +96,14 @@ const Index = () => {
               isSimulating={isSimulating}
               lang={lang}
             />
+            
+            <div className="px-1">
+              <WeatherBanner rainfall={farmData.rainfall} lang={lang} />
+            </div>
           </div>
 
-          {/* Center Panel */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Center Panel: Decision Intelligence */}
+          <div className="lg:col-span-8 space-y-8">
             <CenterPanel
               risk={result.risk}
               profit={result.profit}
@@ -117,32 +111,34 @@ const Index = () => {
               isSimulating={isSimulating}
               lang={lang}
             />
-          </div>
 
-          {/* Right Panel */}
-          <div className="lg:col-span-4 space-y-6">
-            <InsightsPanel
-              factors={result.factors}
-              actions={result.actions}
-              breakeven={result.breakeven}
-              lang={lang}
-            />
+            {/* AI Insights & Analytics (Full Width within this column or below) */}
+            <div className="pt-4">
+              <InsightsPanel
+                factors={result.factors}
+                actions={result.actions}
+                breakeven={result.breakeven}
+                profit={result.profit}
+                lang={lang}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Crop Comparison */}
-        {hasSimulated && (
-          <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            <CropComparison crops={result.cropComparison} lang={lang} />
-          </div>
-        )}
+        {/* Comparison & Schemes Section */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 pt-8 border-t border-white/5">
+          {hasSimulated && (
+            <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
+              <CropComparison crops={result.cropComparison} lang={lang} />
+            </div>
+          )}
 
-        {/* Government Schemes */}
-        {hasSimulated && (
-          <div className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <GovernmentSchemes crop={farmData.crop} investment={farmData.investment} lang={lang} />
-          </div>
-        )}
+          {hasSimulated && (
+            <div className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
+              <GovernmentSchemes crop={farmData.crop} investment={farmData.investment} lang={lang} />
+            </div>
+          )}
+        </div>
 
         {/* What-if hint */}
         {hasSimulated && (

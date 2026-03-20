@@ -11,6 +11,7 @@ import VoiceAssistantPage from "./pages/VoiceAssistantPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Layout from "./components/Layout.tsx";
 import { LanguageProvider } from "./contexts/LanguageContext.tsx";
+import { NotificationProvider } from "./contexts/NotificationContext.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 
 const queryClient = new QueryClient();
@@ -19,23 +20,25 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/weather" element={<Weather />} />
-                <Route path="/voice" element={<VoiceAssistantPage />} />
-              </Route>
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <NotificationProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/analytics" element={<Analytics />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/weather" element={<Weather />} />
+                  <Route path="/voice" element={<VoiceAssistantPage />} />
+                </Route>
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </NotificationProvider>
       </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
