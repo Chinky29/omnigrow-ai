@@ -13,6 +13,7 @@ import Layout from "./components/Layout.tsx";
 import { LanguageProvider } from "./contexts/LanguageContext.tsx";
 import { NotificationProvider } from "./contexts/NotificationContext.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
+import { SimulationProvider } from "./contexts/SimulationContext";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <SimulationProvider>
             <BrowserRouter>
               <Routes>
                 <Route element={<Layout />}>
@@ -37,6 +39,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
+            </SimulationProvider>
           </TooltipProvider>
         </NotificationProvider>
       </LanguageProvider>

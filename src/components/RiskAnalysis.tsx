@@ -1,12 +1,21 @@
 import { AlertTriangle, Info, CheckCircle2 } from "lucide-react";
 import { Language, translations } from "@/lib/translations";
 
+interface FarmData {
+  crop: string;
+  rainfall: number;
+  temperature: number;
+  investment: number;
+  soilType: string;
+}
+
 interface RiskAnalysisProps {
   risk: number;
+  farmData: FarmData;
   lang: Language;
 }
 
-const RiskAnalysis = ({ risk, lang }: RiskAnalysisProps) => {
+const RiskAnalysis = ({ risk, farmData, lang }: RiskAnalysisProps) => {
   const t = translations[lang];
 
   const getRiskStatus = () => {
@@ -19,22 +28,38 @@ const RiskAnalysis = ({ risk, lang }: RiskAnalysisProps) => {
 
   const getAlerts = () => {
     const alerts = [];
-    if (risk >= 70) {
-      alerts.push(lang === "en" ? "Immediate crop insurance (PMFBY) is highly recommended." : "तत्काल फसल बीमा (पीएमएफबीवाई) की अत्यधिक सिफारिश की जाती है।");
-      alerts.push(lang === "en" ? "Extreme weather conditions detected. Monitor water levels daily." : "चरम मौसम की स्थिति का पता चला। प्रतिदिन जल स्तर की निगरानी करें।");
-    } else if (risk >= 40) {
-      alerts.push(lang === "en" ? "Moderate pests risk. Consider preventive organic pesticides." : "मध्यम कीट जोखिम। निवारक जैविक कीटनाशकों पर विचार करें।");
-      alerts.push(lang === "en" ? "Fluctuating temperature may impact grain filling." : "तापमान में उतार-चढ़ाव अनाज भरने को प्रभावित कर सकता है।");
-    } else {
-      alerts.push(lang === "en" ? "Ideal conditions for current growth stage." : "वर्तमान विकास चरण के लिए आदर्श स्थिति।");
+    
+    if (farmData.rainfall < 30) {
+      alerts.push(lang === "en" ? `Critical drought risk for ${farmData.crop}. Irrigation is urgently needed.` : `${farmData.crop} के लिए गंभीर सूखे का जोखिम। सिंचाई की तत्काल आवश्यकता है।`);
+    } else if (farmData.rainfall > 80) {
+      alerts.push(lang === "en" ? `High flooding risk for ${farmData.crop}. Ensure proper drainage.` : `${farmData.crop} के लिए बाढ़ का जोखिम। जल निकासी सुनिश्चित करें।`);
     }
+
+    if (farmData.temperature > 38) {
+      alerts.push(lang === "en" ? `Extreme heat stress detected. Apply mulching to retain soil moisture.` : `अत्यधिक गर्मी का तनाव। मिट्टी की नमी बनाए रखने के लिए मल्चिंग लगाएं।`);
+    } else if (farmData.temperature < 15 && farmData.crop !== "Wheat") {
+      alerts.push(lang === "en" ? `Low temperature may retard ${farmData.crop} growth.` : `कम तापमान ${farmData.crop} के विकास को धीमा कर सकता है।`);
+    }
+
+    if (farmData.investment < 10000 && risk >= 60) {
+      alerts.push(lang === "en" ? "Low investment limits recovery options. Consider PM-Kisan subsidy." : "कम निवेश से रिकवरी के विकल्प सीमित हो जाते हैं। पीएम-किसान पर विचार करें।");
+    }
+
+    if (risk >= 70 && alerts.length === 0) {
+      alerts.push(lang === "en" ? "Immediate crop insurance (PMFBY) is highly recommended." : "तत्काल फसल बीमा (पीएमएफबीवाई) की अत्यधिक सिफारिश की जाती है।");
+    }
+
+    if (alerts.length === 0) {
+      alerts.push(lang === "en" ? "Ideal conditions. Maintain current strategy." : "आदर्श स्थिति। वर्तमान रणनीति बनाए रखें।");
+    }
+
     return alerts;
   };
 
   const alerts = getAlerts();
 
   return (
-    <div className={`glass-card p-6 animate-slide-up border ${status.border} ${status.bg}`}>
+    <div className={`glass-card p-6 animate-slide-up border shadow-lg ${status.border} ${status.bg}`}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold tracking-tight text-foreground uppercase flex items-center gap-2">
           {status.icon}
@@ -59,13 +84,13 @@ const RiskAnalysis = ({ risk, lang }: RiskAnalysisProps) => {
         </div>
 
         <div className="pt-4 border-t border-border/50">
-          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">{t.alerts}</h4>
-          <div className="space-y-2">
+          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">{t.alerts}</h4>
+          <div className="space-y-3">
             {alerts.length > 0 ? (
               alerts.map((alert, i) => (
-                <div key={i} className="flex items-start gap-2 text-xs text-foreground/80 bg-background/40 p-2 rounded-lg border border-border/30">
-                  <div className={`w-1 h-1 rounded-full mt-1.5 shrink-0 ${status.color.replace('text-', 'bg-')}`} />
-                  {alert}
+                <div key={i} className={`flex items-start gap-3 text-sm font-semibold text-foreground bg-black/60 backdrop-blur-md p-4 rounded-xl border-l-[4px] shadow-md group ${status.border}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${status.color.replace('text-', 'bg-')}`} />
+                  <span className="leading-relaxed text-foreground/90 group-hover:text-white">{alert}</span>
                 </div>
               ))
             ) : (

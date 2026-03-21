@@ -15,44 +15,7 @@ interface CenterPanelProps {
 const CenterPanel = ({ risk, profit, outcome, isSimulating, lang }: CenterPanelProps) => {
   const isProfit = profit >= 0;
   const t = translations[lang];
-  const { addNotification } = useNotifications();
-  const lastResultRef = useRef({ risk, profit });
-
-  // Trigger notifications based on simulation results
-  useEffect(() => {
-    if (!isSimulating && (lastResultRef.current.risk !== risk || lastResultRef.current.profit !== profit)) {
-      // High Risk Notification
-      if (risk > 70) {
-        addNotification({
-          type: "risk",
-          title: lang === "en" ? "High Risk Alert!" : "उच्च जोखिम अलर्ट!",
-          message: lang === "en" 
-            ? `Your current farm configuration shows a critical risk level of ${risk}%.`
-            : `आपके वर्तमान फार्म कॉन्फ़िगरेशन में ${risk}% का गंभीर जोखिम स्तर दिख रहा है।`,
-          recommendation: lang === "en"
-            ? "Immediately consider crop insurance and look into drought-resistant seed varieties."
-            : "तुरंत फसल बीमा पर विचार करें और सूखा-प्रतिरोधी बीज किस्मों की तलाश करें।"
-        });
-      }
-
-      // Profit Opportunity Notification
-      if (profit > 50000) {
-        addNotification({
-          type: "opportunity",
-          title: lang === "en" ? "High Profit Opportunity" : "उच्च लाभ का अवसर",
-          message: lang === "en"
-            ? `Excellent! Your estimated profit of ₹${profit.toLocaleString("en-IN")} is above average.`
-            : `उत्कृष्ट! आपका ₹${profit.toLocaleString("en-IN")} का अनुमानित लाभ औसत से अधिक है।`,
-          recommendation: lang === "en"
-            ? "This is a good time to reinvest in modern irrigation tools to secure this yield."
-            : "यह इस उपज को सुरक्षित करने के लिए आधुनिक सिंचाई उपकरणों में पुनर्निवेश करने का एक अच्छा समय है।"
-        });
-      }
-
-      // Update ref
-      lastResultRef.current = { risk, profit };
-    }
-  }, [risk, profit, isSimulating, addNotification, lang]);
+  // Notification triggering moved directly to explicit simulation handler to prevent slider spam
 
   return (
     <div className="flex flex-col gap-8 h-full animate-slide-up relative">

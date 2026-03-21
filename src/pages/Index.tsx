@@ -8,21 +8,17 @@ import RiskAnalysis from "@/components/RiskAnalysis";
 import GovernmentSchemes from "@/components/GovernmentSchemes";
 import { simulate, simulateWithAI } from "@/lib/simulation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useNotifications } from "@/contexts/NotificationContext";
+import { useSimulation } from "@/contexts/SimulationContext";
 
 const Index = () => {
   const { lang, t } = useLanguage();
+  const { addNotification } = useNotifications();
   const [isSimulating, setIsSimulating] = useState(false);
   const [hasSimulated, setHasSimulated] = useState(false);
 
-  const [farmData, setFarmData] = useState({
-    crop: "Wheat",
-    rainfall: 55,
-    soilType: "Alluvial",
-    investment: 15000,
-    temperature: 28,
-  });
-
-  const [result, setResult] = useState(() => simulate(farmData));
+  // ✅ REPLACE with context (already imported at line 11)
+const { result, setResult, farmData, setFarmData } = useSimulation();
 
   // Live what-if updates after first simulation
   useEffect(() => {
@@ -39,12 +35,48 @@ const Index = () => {
       const aiResult = await simulateWithAI(farmData, lang);
       setResult(aiResult);
       setHasSimulated(true);
+
+      // Trigger high-value dynamic, farmer-input alerts
+      if (farmData.rainfall < 30) {
+        addNotification({
+          type: "risk",
+          title: lang === "en" ? `Drought Warning: ${farmData.crop}` : `सूखा चेतावनी: ${farmData.crop}`,
+          message: lang === "en" ? `Critically low rainfall (${farmData.rainfall}%) detected.` : `बहुत कम वर्षा (${farmData.rainfall}%) का पता चला।`,
+          recommendation: lang === "en" ? "Immediate irrigation required. Consider drought-resistant seeds." : "तत्काल सिंचाई आवश्यक है। सूखा प्रतिरोधी बीजों पर विचार करें।"
+        });
+      } else if (farmData.rainfall > 80) {
+        addNotification({
+          type: "risk",
+          title: lang === "en" ? `Flood Risk: ${farmData.crop}` : `बाढ़ का जोखिम: ${farmData.crop}`,
+          message: lang === "en" ? `Excessive rainfall (${farmData.rainfall}%) can cause waterlogging.` : `अत्यधिक वर्षा (${farmData.rainfall}%) से जलभराव हो सकता है।`,
+          recommendation: lang === "en" ? "Ensure proper field drainage immediately." : "खेत में जल निकासी सुनिश्चित करें।"
+        });
+      }
+
+      if (farmData.temperature > 38 && farmData.crop !== "Cotton") {
+        addNotification({
+          type: "event",
+          title: lang === "en" ? "Heat Stress Alert" : "गर्मी के तनाव की चेतावनी",
+          message: lang === "en" ? `Extreme temperature of ${farmData.temperature}°C is risky.` : `${farmData.temperature}°C का अत्यधिक तापमान जोखिम भरा है।`,
+          recommendation: lang === "en" ? "Apply mulching and frequent light irrigation." : "मल्चिंग और लगातार हल्की सिंचाई करें।"
+        });
+      }
+
+      if (aiResult.profit > 50000) {
+        addNotification({
+          type: "opportunity",
+          title: lang === "en" ? "High Yield Forecast" : "उच्च उपज का अनुमान",
+          message: lang === "en" ? `Market conditions and environment are ideal for massive profits.` : `बाजार की स्थिति और पर्यावरण भारी मुनाफा कमाने के लिए आदर्श हैं।`,
+          recommendation: lang === "en" ? "Secure advance buyers and prep harvesting equipment early." : "अग्रिम खरीदारों को सुरक्षित करें और कटाई के उपकरण जल्दी तैयार करें।"
+        });
+      }
+
     } catch (error) {
       console.error("Simulation Error:", error);
     } finally {
       setIsSimulating(false);
     }
-  }, [farmData, lang]);
+  }, [farmData, lang, addNotification]);
 
 
   return (
@@ -100,6 +132,12 @@ const Index = () => {
             <div className="px-1">
               <WeatherBanner rainfall={farmData.rainfall} lang={lang} />
             </div>
+
+            {hasSimulated && (
+              <div className="px-1 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+                <RiskAnalysis farmData={farmData} risk={result.risk} lang={lang} />
+              </div>
+            )}
           </div>
 
           {/* Center Panel: Decision Intelligence */}

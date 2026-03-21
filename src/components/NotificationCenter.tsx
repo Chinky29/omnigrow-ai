@@ -19,7 +19,7 @@ const NotificationCenter = ({ onClose }: { onClose: () => void }) => {
   const { lang } = useLanguage();
 
   return (
-    <div className="absolute top-full right-0 mt-4 w-[380px] sm:w-[420px] glass-card shadow-2xl z-50 animate-slide-up origin-top-right border-white/10">
+    <div className="absolute top-full right-0 mt-4 w-[380px] sm:w-[420px] bg-background/95 backdrop-blur-3xl shadow-2xl z-50 animate-slide-up origin-top-right border border-white/10 rounded-2xl">
       <div className="p-5 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-3xl rounded-t-2xl">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">

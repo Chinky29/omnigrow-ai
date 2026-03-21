@@ -67,21 +67,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // Add sample notifications on mount for demo
-    if (notifications.length === 0) {
-      addNotification({
-        type: "event",
-        title: "Weather Alert",
-        message: "Moderate rain expected in your region within 2 hours.",
-        recommendation: "Ensure proper drainage channels are clear to prevent waterlogging."
-      });
-      addNotification({
-        type: "opportunity",
-        title: "New Subsidy Available",
-        message: "PM-Kisan updated subsidy for organic fertilizers is now open.",
-        recommendation: "Apply via the official portal before the end of this month."
-      });
-    }
+    // Removed sample hardcoded notifications; alerts will now generate dynamically.
   }, []);
 
   return (

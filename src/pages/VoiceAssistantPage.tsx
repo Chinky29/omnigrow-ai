@@ -12,22 +12,30 @@ const VoiceAssistantPage = () => {
   const [response, setResponse] = useState("");
   const recognitionRef = useRef<any>(null);
 
-  // Initialize Speech Recognition
-  useEffect(() => {
+  const startListening = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = lang === "hi" ? "hi-IN" : "en-US";
+    if (!SpeechRecognition) {
+      toast.error("Speech recognition not supported in this browser.");
+      return;
+    }
 
-      recognitionRef.current.onresult = (event: any) => {
+    try {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = lang === "hi" ? "hi-IN" : "en-US";
+
+      recognition.onresult = (event: any) => {
         const currentTranscript = event.results[0][0].transcript;
         setTranscript(currentTranscript);
         processVoiceQuery(currentTranscript);
       };
 
-      recognitionRef.current.onerror = (event: any) => {
+      recognition.onerror = (event: any) => {
         console.error("Speech Recognition Error:", event.error);
         setIsListening(false);
         if (event.error !== "no-speech") {
@@ -35,27 +43,21 @@ const VoiceAssistantPage = () => {
         }
       };
 
-      recognitionRef.current.onend = () => {
+      recognition.onend = () => {
         setIsListening(false);
       };
-    }
-  }, [lang, t.voiceError]);
 
-  useEffect(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.lang = lang === "hi" ? "hi-IN" : "en-US";
+      recognitionRef.current = recognition;
+      
+      setTranscript("");
+      setResponse("");
+      setIsListening(true);
+      recognition.start();
+    } catch (error) {
+      console.error("Speech recognition start error:", error);
+      setIsListening(false);
+      toast.error(t.voiceError);
     }
-  }, [lang]);
-
-  const startListening = () => {
-    if (!recognitionRef.current) {
-      toast.error("Speech recognition not supported in this browser.");
-      return;
-    }
-    setTranscript("");
-    setResponse("");
-    setIsListening(true);
-    recognitionRef.current.start();
   };
 
   const stopAssistant = () => {
